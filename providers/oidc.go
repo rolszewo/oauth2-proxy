@@ -96,6 +96,7 @@ func (p *OIDCProvider) EnrichSession(ctx context.Context, s *sessions.SessionSta
 func (p *OIDCProvider) enrichFromProfileURL(ctx context.Context, s *sessions.SessionState) error {
 	respJSON, err := requests.New(p.ProfileURL.String()).
 		WithContext(ctx).
+		WithHeaders(makeOIDCHeader(s.AccessToken)).
 		WithBody(strings.NewReader("{\"jwt\":  \"" + s.AccessToken + "\"}")).
 		Do().
 		UnmarshalJSON()
