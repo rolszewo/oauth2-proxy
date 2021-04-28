@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"reflect"
 	"time"
+	"strings"
 
 	"github.com/oauth2-proxy/oauth2-proxy/v7/pkg/apis/sessions"
 	"github.com/oauth2-proxy/oauth2-proxy/v7/pkg/logger"
@@ -95,7 +96,7 @@ func (p *OIDCProvider) EnrichSession(ctx context.Context, s *sessions.SessionSta
 func (p *OIDCProvider) enrichFromProfileURL(ctx context.Context, s *sessions.SessionState) error {
 	respJSON, err := requests.New(p.ProfileURL.String()).
 		WithContext(ctx).
-		WithHeaders(makeOIDCHeader(s.AccessToken)).
+		WithBody(strings.NewReader("{\"jwt\":  \"" + s.AccessToken + "\"}")).
 		Do().
 		UnmarshalJSON()
 	if err != nil {
